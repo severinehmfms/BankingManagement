@@ -20,7 +20,7 @@ public class DatabaseConnection {
     	// Récupération de la connection à partir d'une url + id + pwd
         String url = "jdbc:mariadb://localhost:3306/bank";
         String login = "bank";
-        String password = "1234";
+        String password = "abcd";
         
         return DriverManager.getConnection(url, login, password);
 	}
