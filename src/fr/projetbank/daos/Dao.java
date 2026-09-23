@@ -2,9 +2,9 @@ package fr.projetbank.daos;
 
 import java.util.List;
 
-public interface Dao<T> {
+public interface Dao<T, ID> {
 
-    T readById(int id);
+    T readById(ID id);
 
     List<T> readAll();
 
@@ -12,5 +12,4 @@ public interface Dao<T> {
 
     boolean update(T object);
 
-    boolean delete(int id);
 }
