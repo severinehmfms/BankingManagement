@@ -1,5 +1,6 @@
 package fr.projetbank.daos;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,31 +9,37 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.projetbank.models.BankAccount;
 import fr.projetbank.database.DatabaseConnection;
+import fr.projetbank.models.BankAccount;
+import fr.projetbank.models.Operation;
 
-public class BankAccount implements Dao<BankAccount> {
+public class BankAccountDao implements Dao<BankAccount, String> {
 
 	/**
-	 * Méthode readById pour retourner l'objet Article correspondant à l'id
+	 * Méthode readById pour retourner l'objet BankAccount correspondant à l'id
 	 */
 	@Override
-	public BankAccount readById(int NumBankAccount) {
+	public BankAccount readById(String numBankAccount) {
 		BankAccount bankAccount = null;
 		try (Connection connection = DatabaseConnection.getConnection()) {
-			String strSql = "SELECT * FROM T_Articles WHERE IdArticle = ?";
+			String strSql = "SELECT * FROM Bank_Account WHERE NumBankAccount = ?";
 			try (PreparedStatement ps = connection.prepareStatement(strSql)){
-				ps.setInt(1, idArticle);
-				//System.out.println(strSql);
+				ps.setString(1, numBankAccount);
+				System.out.println(strSql);
 	        	try(ResultSet resultSet = ps.executeQuery()){
 	        		
 	        		if (resultSet.next()) { // On lit la première (et unique) ligne
-	        			int rsIdUser = resultSet.getInt("idArticle"); 
-	        			String rsDescription = resultSet.getString("Description");
-	        			String rsMarque = resultSet.getString("Brand");
-	        			double rsPrixUnitaire = resultSet.getDouble("UnitaryPrice");
+	        			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
+	        			String rsHolder = resultSet.getString("Holder");
+	        			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
+	        			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");
 	        			
-	        			article = new Article(rsIdUser, rsDescription, rsMarque, rsPrixUnitaire);
+	        			
+	        			//TODO On va récupérer la liste des opérations correspondant à ce compte bancaire
+	        			//En appelant le dao Operation
+	        			
+	        			
+	        			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
 	                } else {
 	                    System.out.println("Aucun résultat trouvé.");
 	                }
@@ -41,60 +48,49 @@ public class BankAccount implements Dao<BankAccount> {
 		} catch (Exception e) {
             e.printStackTrace();
         }
-		return article;
+		return bankAccount;
 	}
 
 	/**
-	 * Méthode qui renvoie la liste de tous les articles
+	 * Méthode qui renvoie la liste de tous les comptes bancaires
 	 */
 	@Override
-	public List<Article> readAll() {
-		ArrayList<Article> articles = new ArrayList<Article>();
+	public List<BankAccount> readAll() {
+		ArrayList<BankAccount> bankAccounts = new ArrayList<BankAccount>();
 		try (Connection connection = DatabaseConnection.getConnection()) {
-			String strSql = "SELECT * FROM T_Articles";
+			String strSql = "SELECT * FROM Bank_Account";
 	        try(Statement statement = connection.createStatement()){
 	        	try(ResultSet resultSet = statement.executeQuery(strSql)){
 	        		while(resultSet.next()) {
-	        			int rsIdUser = resultSet.getInt(1); 
-	        			String rsDescription = resultSet.getString(2);
-	        			String rsMarque = resultSet.getString(3);
-	        			double rsPrixUnitaire = resultSet.getDouble(4);
-	        			articles.add((new Article(rsIdUser, rsDescription, rsMarque, rsPrixUnitaire)));
+	        			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
+	        			String rsHolder = resultSet.getString("Holder");
+	        			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
+	        			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");
+	        			bankAccounts.add(new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>()));
 	        		}
 	        	}
 	        }
 		} catch (Exception e) {
             e.printStackTrace();
         }
-		return articles;
+		return bankAccounts;
 	}
 
 	/**
-	 * Méthode pour créer un article dans la base
+	 * Méthode pour créer un compte bancaire dans la base
 	 */
 	@Override
-	public Article create(Article obj) {
+	public BankAccount create(BankAccount obj) {
 		try (Connection connection = DatabaseConnection.getConnection()) {
-			String str = "INSERT INTO T_Articles (Description, Brand, UnitaryPrice) VALUES (?,?,?)";
-			try (PreparedStatement ps = connection.prepareStatement(str, Statement.RETURN_GENERATED_KEYS)){
-				ps.setString(1, obj.getDescription());
-				ps.setString(2, obj.getBrand());
-				ps.setDouble(3, obj.getPrice());
+			System.out.println("Connection à la base de données ok ! ");
+			String str = "INSERT INTO Bank_Account (NumBankAccount, Holder, Balance, MaximumBalance) VALUES (?,?,?,?)";
+			try (PreparedStatement ps = connection.prepareStatement(str)){
+				ps.setString(1, obj.getNumBankAccount());
+				ps.setString(2, obj.getHolder());
+				ps.setBigDecimal(3, obj.getBalance());
+				ps.setBigDecimal(4, obj.getMaximumBalance());
 				if( ps.executeUpdate() == 0)
-					throw new SQLException("Échec de l'insertion, aucune ligne affectée.");
-				
-	            // Récupération de l'ID généré
-	            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-	                if (generatedKeys.next()) {
-	                    int id = generatedKeys.getInt(1);
-	                    System.out.println("Nouvel ID généré : " + id);
-	                    
-	                    obj.setIdentifiant(id);
-	                } else {
-	                    throw new SQLException("Échec de la récupération de l'ID généré.");
-	                }
-	            }
-	            
+					throw new SQLException("Échec de l'insertion, aucune ligne affectée.");	            
 			}catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -106,18 +102,18 @@ public class BankAccount implements Dao<BankAccount> {
 	}
 
 	/**
-	 * Méthode qui modifie un article dans la base
+	 * Méthode qui modifie un compte bancaire dans la base
 	 */
 	@Override
-	public boolean update(Article obj) {
+	public boolean update(BankAccount obj) {
 		try (Connection connection = DatabaseConnection.getConnection()) {
-			String str = "UPDATE T_Articles SET Description=?, Brand=?, UnitaryPrice=? WHERE IdArticle=?";
+			String str = "UPDATE Bank_Account SET Holder=?, Balance=?, MaximumBalance=? WHERE NumBankAccount=?";
 			
 			try (PreparedStatement ps = connection.prepareStatement(str)){
-				ps.setString(1, obj.getDescription());
-				ps.setString(2, obj.getBrand());
-				ps.setDouble(3, obj.getPrice());
-				ps.setInt(4, obj.getIdentifiant());
+				ps.setString(1, obj.getHolder());
+				ps.setBigDecimal(2, obj.getBalance());
+				ps.setBigDecimal(3, obj.getMaximumBalance());
+				ps.setString(4, obj.getNumBankAccount());
 				
 				// On récupère le nombre de lignes affectées par la requête
 				int nbLignes = ps.executeUpdate(); 
@@ -130,6 +126,7 @@ public class BankAccount implements Dao<BankAccount> {
 	            
 			}catch (SQLException e) {
 				e.printStackTrace();
+				return false;
 			}
 
         } catch (Exception e) {
@@ -140,18 +137,17 @@ public class BankAccount implements Dao<BankAccount> {
 	}
 
 	/**
-	 * Méthode qui supprime un article de la base
+	 * Méthode qui supprime un compte bancaire de la base
 	 */
-	@Override
-	public boolean delete(int idArticle) {
+	public boolean delete(String numBankAccount) {
 
-	    String strSql = "DELETE FROM T_Articles WHERE IdArticle=?";
+	    String strSql = "DELETE FROM Bank_Account WHERE NumBankAccount=?";
 
 	    try (Connection connection = DatabaseConnection.getConnection()){
 	    		
 	    	try(PreparedStatement ps = connection.prepareStatement(strSql)){
 
-	        	ps.setInt(1, idArticle);
+	        	ps.setString(1, numBankAccount);
 
 	        	// ps.executeUpdate() = nombre de lignes affectées par la requête
 	        	return ps.executeUpdate() > 0;
@@ -165,6 +161,5 @@ public class BankAccount implements Dao<BankAccount> {
 	        e.printStackTrace();
 	        return false;
 	    }
-	}	
-	
+	}
 }
