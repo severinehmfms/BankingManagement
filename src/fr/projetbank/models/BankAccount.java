@@ -46,6 +46,10 @@ public class BankAccount {
 		this.balance = balance;
 		this.maximumBalance = maximumBalance;
 		this.lstOperations = lstOperations;
+	}	
+	
+	public String toString() {
+		return "Numéro de compte : " + this.numBankAccount + " - Titulaire : " + this.holder + " - Solde : " + this.balance + "€";
 	}
 
 	public String getNumBankAccount() {
