@@ -9,16 +9,16 @@ USE Bank;
 -- - Construction des TABLESPACE						                     ---
 -- -----------------------------------------------------------------------------
 CREATE TABLE Bank_Account (
-	NumBankAccount		varchar(12) PRIMARY KEY,
-	Titulaire			varchar(30)	NOT NULL
+	NumBankAccount		varchar(12) 	PRIMARY KEY,
+	Holder				varchar(30)		NOT NULL
 ) ENGINE = InnoDB;
 
 CREATE TABLE Operations(
-	IdOperation 		int(4) 		PRIMARY KEY AUTO_INCREMENT,
-	DateOperation 		DATE		NOT NULL DEFAULT NOW(),
-	AmountTransaction	float(4)	NOT NULL,
-	TypeOperation		smallint	NOT NULL,
-	NumBankAccount      varchar(12) NOT NULL,
+	IdOperation 		int(4) 			PRIMARY KEY AUTO_INCREMENT,
+	DateOperation 		DATETIME 		NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	AmountTransaction	decimal(10,2)	NOT NULL,
+	TypeOperation		smallint		NOT NULL,
+	NumBankAccount      varchar(12) 	NOT NULL,
 	KEY NumBankAccount (NumBankAccount)
  ) ENGINE = InnoDB;
 

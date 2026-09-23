@@ -1,0 +1,27 @@
+package fr.projetbank.database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DatabaseConnection {
+	public static void main(String[] args) throws Exception {
+
+	}
+	
+	public static Connection getConnection() throws SQLException {
+    	try {
+    		Class.forName("org.mariadb.jdbc.Driver");	//Enregistre la class auprès du driver manager : autrement dit charge le pilote
+    		    		
+    	}catch(ClassNotFoundException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	// Récupération de la connection à partir d'une url + id + pwd
+        String url = "jdbc:mariadb://localhost:3306/bank";
+        String login = "bank";
+        String password = "1234";
+        
+        return DriverManager.getConnection(url, login, password);
+	}
+}
