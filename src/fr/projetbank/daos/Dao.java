@@ -11,5 +11,7 @@ public interface Dao<T, ID> {
     T create(T object);
 
     boolean update(T object);
+    
+    //    boolean delete(ID id);
 
 }
