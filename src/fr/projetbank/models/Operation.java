@@ -7,7 +7,13 @@ public class Operation {
 	/**
 	 * Opération bancaire
 	 */
-	private Date dateOperation;
-	private double montant;
+	
+	public static enum TypeTransaction {
+		DEPOSIT, WITHDRAWAL, TRANSFER
+	}
+	
+	private Date dateTransaction;
+	private double amountTransaction;
+	private BankAccount bankAccount;
 
 }
