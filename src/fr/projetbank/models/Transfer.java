@@ -5,7 +5,9 @@ public class Transfer extends Operation{
 	/**
 	 * Virement bancaire
 	 */
-
+	
+	private BankAccount bankAccountDestination;
+	
 	
 	
 }
