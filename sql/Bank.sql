@@ -10,7 +10,8 @@ USE Bank;
 -- -----------------------------------------------------------------------------
 CREATE TABLE Bank_Account (
 	NumBankAccount		varchar(12) 	PRIMARY KEY,
-	Holder				varchar(30)		NOT NULL
+	Holder				varchar(30)		NOT NULL,
+	maximumBalance		decimal(10,2)	NOT NULL
 ) ENGINE = InnoDB;
 
 CREATE TABLE Operations(
