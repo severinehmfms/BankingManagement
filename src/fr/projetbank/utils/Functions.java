@@ -189,8 +189,6 @@ public class Functions {
 	    return date;
 	}	
 
-	
-	
 	/** 
 	 * Fonction qui permet de demander une saisie à l'utilisateur
 	 * prompt = Prompt qui demande à l'utilisateur de saisir 

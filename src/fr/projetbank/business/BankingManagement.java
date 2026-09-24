@@ -1,5 +1,6 @@
 package fr.projetbank.business;
 
+import java.text.ParseException;
 import java.util.Scanner;
 
 import fr.projetbank.utils.Functions;
@@ -11,7 +12,7 @@ public class BankingManagement {
 	//On initialise le scanner
 	private static Scanner scanner = new Scanner(System.in);
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws ParseException{
 		
 		String[] menu = {
 				"Création d'un compte bancaire",
@@ -59,23 +60,56 @@ public class BankingManagement {
 	
 	/**
 	 * Méthode pour créer un compte bancaire
+	 * @throws ParseException 
 	 */
-	public static void createBankAccount() {
+	public static void createBankAccount() throws ParseException {
 		System.out.println("Création d'un compte bancaire");
 		
-		String numBankAccount = Functions.input_string(scanner, "Numéro du compte : ");
+		String numBankAccount = inputNumBankAccount(scanner, "Numéro du compte : ");
 		String holder = Functions.input_string(scanner, "Titulaire du compte : ");
 		
 		BankAccount bankAccount = new BankAccount(numBankAccount,holder);		
 		BankAccountDao bkDao = new BankAccountDao();
-		bankAccount = bkDao.create(bankAccount);
+		System.out.println("on va créer le compte "+numBankAccount+"\n");
+		//TODO Décommenter
+		/*bankAccount = bkDao.create(bankAccount);
 		if (bankAccount == null) {
 			System.out.println("ERREUR lors de la création du compte");
 		}else {
 			System.out.println("Création de ce compte bien effectuée : ");
 			System.out.println(bankAccount);
-		}		
+		}		*/
 	}
+	
+	/** 
+	 * Fonction qui permet de demander un numéro de compte au format FR-XXXX-XXXX
+	 * prompt = Prompt qui demande à l'utilisateur de saisir 
+	 * @throws ParseException 
+	 */
+	public static String inputNumBankAccount(Scanner scanner, String prompt) throws ParseException {
+		boolean is_input_ok = false;
+		String input_user = "";
+		while (!is_input_ok) {
+			System.out.println(prompt);
+			input_user = scanner.nextLine();
+			
+			try {
+				if (input_user.trim().isEmpty()) {
+					System.out.println("ERREUR - La saisie ne peut pas être à vide");
+					is_input_ok = false;
+				}else if (!input_user.matches("^FR-\\d{4}-\\d{4}$")) {
+		            throw new ParseException("La saisie doit être au format FR-XXXX-XXXX", 0); 
+				}else {		
+					is_input_ok = true;
+				}
+			}catch(ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return input_user;
+	}
+	
+	
 	
 	
 }
