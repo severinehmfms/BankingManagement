@@ -13,6 +13,8 @@ public class BankingManagement {
 	private static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) throws ParseException{
+		//Dao pour gérer les comptes bancaires en base
+		BankAccountDao bkDao = new BankAccountDao();
 		
 		String[] menu = {
 				"Création d'un compte bancaire",
@@ -28,7 +30,7 @@ public class BankingManagement {
 			switch(choice_user) {
 				case 1:				
 					//Création d'un compte bancaire
-					createBankAccount();
+					createBankAccount(bkDao);
 					break;
 				case 2:				
 					//Consultation d'un compte bancaire
@@ -62,14 +64,13 @@ public class BankingManagement {
 	 * Méthode pour créer un compte bancaire
 	 * @throws ParseException 
 	 */
-	public static void createBankAccount() throws ParseException {
+	public static void createBankAccount(BankAccountDao bkDao) throws ParseException {
 		System.out.println("Création d'un compte bancaire");
 		
-		String numBankAccount = inputNumBankAccount(scanner, "Numéro du compte : ");
+		String numBankAccount = inputNumBankAccount(bkDao, scanner, "Numéro du compte : ");
 		String holder = Functions.input_string(scanner, "Titulaire du compte : ");
 		
 		BankAccount bankAccount = new BankAccount(numBankAccount,holder);		
-		BankAccountDao bkDao = new BankAccountDao();
 		System.out.println("on va créer le compte "+numBankAccount+"\n");
 		//TODO Décommenter
 		/*bankAccount = bkDao.create(bankAccount);
@@ -86,7 +87,7 @@ public class BankingManagement {
 	 * prompt = Prompt qui demande à l'utilisateur de saisir 
 	 * @throws ParseException 
 	 */
-	public static String inputNumBankAccount(Scanner scanner, String prompt) throws ParseException {
+	public static String inputNumBankAccount(BankAccountDao bkDao, Scanner scanner, String prompt) throws ParseException {
 		boolean is_input_ok = false;
 		String input_user = "";
 		while (!is_input_ok) {
@@ -99,7 +100,9 @@ public class BankingManagement {
 					is_input_ok = false;
 				}else if (!input_user.matches("^FR-\\d{4}-\\d{4}$")) {
 		            throw new ParseException("La saisie doit être au format FR-XXXX-XXXX", 0); 
-				}else {		
+				}else if (bkDao.isExist(input_user)){
+					throw new ParseException("Ce numéro de compte existe déjà", 0); 
+		       	}else {		
 					is_input_ok = true;
 				}
 			}catch(ParseException e) {
@@ -109,7 +112,12 @@ public class BankingManagement {
 		return input_user;
 	}
 	
-	
-	
+
+	/**
+	 * Méthode pour consulter un compte bancaire
+	 */
+	public static void showBankAccount() {
+		
+	}
 	
 }
