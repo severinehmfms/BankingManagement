@@ -20,4 +20,10 @@ public class Withdrawal extends Operation{
     public typesOperations getTypeOperation() {
         return typesOperations.WITHDRAWAL;
     }
+	
+	@Override
+	public String toString() {
+		return "Compte lié " + super.getBankAccount().getNumBankAccount() + " - " + this.getTypeOperation() 
+				+ " - Date : " + super.dateOperation + " - Montant : " + super.amountTransaction + "€\n";
+	}
 }
