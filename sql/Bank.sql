@@ -19,7 +19,7 @@ CREATE TABLE Operations(
 	IdOperation 			int(4) 			PRIMARY KEY AUTO_INCREMENT,
 	DateOperation 			DATETIME 		NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	AmountTransaction		decimal(10,2)	NOT NULL,
-	TypeOperation			smallint		NOT NULL,
+	TypeOperation			varchar(12)		NOT NULL,
 	NumBankAccount      	varchar(12) 	NOT NULL,
 	NumBankAccountDestination varchar(12) 	NULL,
 	KEY NumBankAccount (NumBankAccount),
