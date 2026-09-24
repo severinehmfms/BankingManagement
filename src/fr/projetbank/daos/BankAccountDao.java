@@ -14,7 +14,29 @@ import fr.projetbank.models.BankAccount;
 import fr.projetbank.models.Operation;
 
 public class BankAccountDao implements Dao<BankAccount, String> {
-
+	
+	public BankAccount getBankAccountFromDb(ResultSet resultSet) throws SQLException {
+		BankAccount bankAccount = null;
+		try {
+			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
+			String rsHolder = resultSet.getString("Holder");
+			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
+			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");
+			
+			
+			//TODO On va récupérer la liste des opérations correspondant à ce compte bancaire
+			//En appelant le dao Operation
+			
+			
+			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
+	   
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return bankAccount;
+	}
+	
+	
 	/**
 	 * Méthode readById pour retourner l'objet BankAccount correspondant à l'id
 	 */
@@ -29,6 +51,9 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 	        	try(ResultSet resultSet = ps.executeQuery()){
 	        		
 	        		if (resultSet.next()) { // On lit la première (et unique) ligne
+	        			bankAccount = getBankAccountFromDb(resultSet);
+	        			 
+	        			/*if (resultSet != null) {
 	        			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
 	        			String rsHolder = resultSet.getString("Holder");
 	        			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
@@ -40,6 +65,7 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 	        			
 	        			
 	        			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
+	                	*/
 	                } else {
 	                    System.out.println("Aucun résultat trouvé.");
 	                }
@@ -56,17 +82,25 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 	 */
 	@Override
 	public List<BankAccount> readAll() {
-		ArrayList<BankAccount> bankAccounts = new ArrayList<BankAccount>();
+		List<BankAccount> bankAccounts = new ArrayList<BankAccount>();
 		try (Connection connection = DatabaseConnection.getConnection()) {
 			String strSql = "SELECT * FROM Bank_Account";
 	        try(Statement statement = connection.createStatement()){
 	        	try(ResultSet resultSet = statement.executeQuery(strSql)){
 	        		while(resultSet.next()) {
-	        			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
+	        			/*String rsNumBankAccount = resultSet.getString("numBankAccount"); 
 	        			String rsHolder = resultSet.getString("Holder");
 	        			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
 	        			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");
 	        			bankAccounts.add(new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>()));
+	        			 */
+	        			
+	        			BankAccount bankAccount = getBankAccountFromDb(resultSet);
+	        			
+	        			if (bankAccount != null) {
+	        				bankAccounts.add(bankAccount);
+	        			}
+	        			
 	        		}
 	        	}
 	        }
@@ -82,7 +116,7 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 	@Override
 	public BankAccount create(BankAccount obj) {
 		try (Connection connection = DatabaseConnection.getConnection()) {
-			System.out.println("Connection à la base de données ok ! ");
+			//TODO Gérer le cas ou ce numéro de compte existe déjà !!!! Renvoyer une exception !!!! 
 			String str = "INSERT INTO Bank_Account (NumBankAccount, Holder, Balance, MaximumBalance) VALUES (?,?,?,?)";
 			try (PreparedStatement ps = connection.prepareStatement(str)){
 				ps.setString(1, obj.getNumBankAccount());
