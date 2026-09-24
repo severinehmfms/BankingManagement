@@ -47,7 +47,7 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 			String strSql = "SELECT * FROM Bank_Account WHERE NumBankAccount = ?";
 			try (PreparedStatement ps = connection.prepareStatement(strSql)){
 				ps.setString(1, numBankAccount);
-				System.out.println(strSql);
+				//System.out.println(strSql);
 	        	try(ResultSet resultSet = ps.executeQuery()){
 	        		
 	        		if (resultSet.next()) { // On lit la première (et unique) ligne
