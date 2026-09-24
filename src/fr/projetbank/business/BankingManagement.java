@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import fr.projetbank.utils.Functions;
 import fr.projetbank.daos.BankAccountDao;
+import fr.projetbank.daos.OperationDao;
 import fr.projetbank.exceptions.BankAccountAlreadyExistsException;
 import fr.projetbank.exceptions.BankAccountNoExistsException;
 import fr.projetbank.models.BankAccount;
@@ -21,6 +22,9 @@ public class BankingManagement {
 	public static void main(String[] args) throws ParseException, BankAccountAlreadyExistsException, BankAccountNoExistsException{
 		//Dao pour gérer les comptes bancaires en base
 		BankAccountDao bkDao = new BankAccountDao();
+		
+		//Dao pour gérer les opérations en base
+		OperationDao opDao = new OperationDao();
 		
 		String[] menu = {
 				"Création d'un compte bancaire",
@@ -47,7 +51,7 @@ public class BankingManagement {
 					//Gestion des opérations
 					System.out.println("Gestion des opérations");
 					System.out.println("Fonctionnalité non implémentée pour l'instant");
-					gestionOperations(bkDao);
+					gestionOperations(bkDao,opDao);
 					break;
 				case 4:
 					//Historique des opérations
@@ -155,11 +159,12 @@ public class BankingManagement {
 	/**
 	 * Méthode pour afficher le menu Gestion des opérations
 	 * @param bkDao
+	 * @param opDao
 	 * @throws BankAccountAlreadyExistsException 
 	 * @throws ParseException 
 	 * @throws BankAccountNoExistsException 
 	 */
-	public static void gestionOperations(BankAccountDao bkDao) throws ParseException, BankAccountAlreadyExistsException, BankAccountNoExistsException {
+	public static void gestionOperations(BankAccountDao bkDao, OperationDao opDao) throws ParseException, BankAccountAlreadyExistsException, BankAccountNoExistsException {
 		String[] menu = {
 				"Effectuer un dépôt",
 				"Effectuer un retrait",
@@ -174,7 +179,6 @@ public class BankingManagement {
 				case 1:				
 					//Effectuer un dépôt
 					System.out.println("Effectuer un dépôt");
-					System.out.println("Fonctionnalité non implémentée pour l'instant");
 					
 					String numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte sur lequel vous souhaitez effectuer un dépôt : ",true, false);
 					BankAccount bankAccount = bkDao.readById(numBankAccount);
@@ -189,6 +193,7 @@ public class BankingManagement {
 						System.out.println("Le plafond de votre compte est atteint, il ne vous est plus possible d'effectuer un dépôt !");
 					}else {
 						Deposit op = new Deposit(new Date(), new BigDecimal(amount), bankAccount);
+						opDao.create(op);
 					}
 					break;
 				case 2:				
