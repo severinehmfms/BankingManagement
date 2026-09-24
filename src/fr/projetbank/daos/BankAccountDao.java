@@ -36,6 +36,18 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 		return bankAccount;
 	}
 	
+	/**
+	 * Méthode qui teste si un compte avec le numéro de compte numBankAccount existe en base.
+	 * @param numBankAccount
+	 * @return
+	 */
+	public boolean isExist(String numBankAccount) {
+		if (this.readById(numBankAccount) != null) {
+			return true;
+		}		
+		return false;
+	}
+	
 	
 	/**
 	 * Méthode readById pour retourner l'objet BankAccount correspondant à l'id
@@ -66,9 +78,7 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 	        			
 	        			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
 	                	*/
-	                } else {
-	                    System.out.println("Aucun résultat trouvé.");
-	                }
+	                } 
 	        	}	        	
 	        }
 		} catch (Exception e) {
