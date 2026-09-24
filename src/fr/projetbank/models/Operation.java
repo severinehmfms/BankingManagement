@@ -13,10 +13,10 @@ public abstract class Operation {
 		DEPOSIT, WITHDRAWAL, TRANSFER
 	}
 	
-	private int idOperation;
-	private Date dateOperation;
-	private BigDecimal amountTransaction;
-	private BankAccount bankAccount;
+	protected int idOperation;
+	protected Date dateOperation;
+	protected BigDecimal amountTransaction;
+	protected BankAccount bankAccount;
 	
 	/**
 	 * Constructeur quand l'identifiant n'est pas encore connu
@@ -44,6 +44,11 @@ public abstract class Operation {
 		this.amountTransaction = amountTransaction;
 		this.bankAccount = bankAccount;
 	}	
+	
+	/**
+	 * Méthode toString abstraite
+	 */
+	public abstract String toString();
 
 	public int getIdOperation() {
 		return idOperation;
