@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import fr.projetbank.utils.Functions;
 import fr.projetbank.daos.BankAccountDao;
+import fr.projetbank.exceptions.BankAccountAlreadyExistsException;
 import fr.projetbank.models.BankAccount;
 
 public class BankingManagement {
@@ -12,7 +13,7 @@ public class BankingManagement {
 	//On initialise le scanner
 	private static Scanner scanner = new Scanner(System.in);
 	
-	public static void main(String[] args) throws ParseException{
+	public static void main(String[] args) throws ParseException, BankAccountAlreadyExistsException{
 		//Dao pour gérer les comptes bancaires en base
 		BankAccountDao bkDao = new BankAccountDao();
 		
@@ -63,8 +64,9 @@ public class BankingManagement {
 	/**
 	 * Méthode pour créer un compte bancaire
 	 * @throws ParseException 
+	 * @throws BankAccountAlreadyExistsException 
 	 */
-	public static void createBankAccount(BankAccountDao bkDao) throws ParseException {
+	public static void createBankAccount(BankAccountDao bkDao) throws ParseException, BankAccountAlreadyExistsException {
 		System.out.println("Création d'un compte bancaire");
 		
 		String numBankAccount = inputNumBankAccount(bkDao, scanner, "Numéro du compte : ");
@@ -86,8 +88,9 @@ public class BankingManagement {
 	 * Fonction qui permet de demander un numéro de compte au format FR-XXXX-XXXX
 	 * prompt = Prompt qui demande à l'utilisateur de saisir 
 	 * @throws ParseException 
+	 * @throws BankAccountAlreadyExistsException 
 	 */
-	public static String inputNumBankAccount(BankAccountDao bkDao, Scanner scanner, String prompt) throws ParseException {
+	public static String inputNumBankAccount(BankAccountDao bkDao, Scanner scanner, String prompt) throws ParseException, BankAccountAlreadyExistsException {
 		boolean is_input_ok = false;
 		String input_user = "";
 		while (!is_input_ok) {
@@ -101,11 +104,13 @@ public class BankingManagement {
 				}else if (!input_user.matches("^FR-\\d{4}-\\d{4}$")) {
 		            throw new ParseException("La saisie doit être au format FR-XXXX-XXXX", 0); 
 				}else if (bkDao.isExist(input_user)){
-					throw new ParseException("Ce numéro de compte existe déjà", 0); 
+					throw new BankAccountAlreadyExistsException("Ce numéro de compte existe déjà"); 
 		       	}else {		
 					is_input_ok = true;
 				}
 			}catch(ParseException e) {
+				e.printStackTrace();
+			}catch(BankAccountAlreadyExistsException e) {
 				e.printStackTrace();
 			}
 		}
