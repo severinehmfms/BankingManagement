@@ -133,7 +133,8 @@ public class TestBankingManagement {
 		
 		System.out.println("--Test readById\n"); 
 		//On vérifie la non existence d'un compte bancaire pour ce numéro de compte
-		if (bkDao.readById(numCompteToCreate) == null) {
+		//if (bkDao.readById(numCompteToCreate) == null) {
+		if (!bkDao.isExist(numCompteToCreate)) {			
 			System.out.println("Ce compte bancaire n'existe pas, on le crée !");
 			//Test : On crée ce compte bancaire (ok)
 			System.out.println("--Test create\n"); 
