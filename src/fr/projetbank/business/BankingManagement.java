@@ -1,6 +1,7 @@
 package fr.projetbank.business;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.Scanner;
 
 import fr.projetbank.utils.Functions;
@@ -36,8 +37,7 @@ public class BankingManagement {
 				case 2:				
 					//Consultation d'un compte bancaire
 					System.out.println("Consultation d'un compte bancaire");
-					System.out.println("Fonctionnalité non implémentée pour l'instant");
-					//showBankAccount();
+					showBankAccount(bkDao);
 					break;				
 				case 3:				
 					//Gestion des opérations
@@ -69,7 +69,7 @@ public class BankingManagement {
 	public static void createBankAccount(BankAccountDao bkDao) throws ParseException, BankAccountAlreadyExistsException {
 		System.out.println("Création d'un compte bancaire");
 		
-		String numBankAccount = inputNumBankAccount(bkDao, scanner, "Numéro du compte : ");
+		String numBankAccount = inputNumBankAccount(bkDao, "Numéro du compte : ",true);
 		String holder = Functions.input_string(scanner, "Titulaire du compte : ");
 		
 		BankAccount bankAccount = new BankAccount(numBankAccount,holder);		
@@ -84,13 +84,17 @@ public class BankingManagement {
 		}		*/
 	}
 	
-	/** 
+	/**
 	 * Fonction qui permet de demander un numéro de compte au format FR-XXXX-XXXX
-	 * prompt = Prompt qui demande à l'utilisateur de saisir 
-	 * @throws ParseException 
-	 * @throws BankAccountAlreadyExistsException 
+	 * @param bkDao Dao qui permet de gérer en base les BankAccount
+	 * @param scanner
+	 * @param prompt Prompt qui demande à l'utilisateur de saisir 
+	 * @param verifExist : true si il faut vérifier si ce compte existe déjà
+	 * @return
+	 * @throws ParseException
+	 * @throws BankAccountAlreadyExistsException
 	 */
-	public static String inputNumBankAccount(BankAccountDao bkDao, Scanner scanner, String prompt) throws ParseException, BankAccountAlreadyExistsException {
+	public static String inputNumBankAccount(BankAccountDao bkDao, String prompt, boolean verifExist) throws ParseException, BankAccountAlreadyExistsException {
 		boolean is_input_ok = false;
 		String input_user = "";
 		while (!is_input_ok) {
@@ -103,7 +107,7 @@ public class BankingManagement {
 					is_input_ok = false;
 				}else if (!input_user.matches("^FR-\\d{4}-\\d{4}$")) {
 		            throw new ParseException("La saisie doit être au format FR-XXXX-XXXX", 0); 
-				}else if (bkDao.isExist(input_user)){
+				}else if (verifExist && bkDao.isExist(input_user)){
 					throw new BankAccountAlreadyExistsException("Ce numéro de compte existe déjà"); 
 		       	}else {		
 					is_input_ok = true;
@@ -120,9 +124,22 @@ public class BankingManagement {
 
 	/**
 	 * Méthode pour consulter un compte bancaire
+	 * @param bkDao
+	 * @throws ParseException
+	 * @throws BankAccountAlreadyExistsException
 	 */
-	public static void showBankAccount() {
-		
+	public static void showBankAccount(BankAccountDao bkDao) throws ParseException, BankAccountAlreadyExistsException {
+		System.out.println("--Liste des comptes bancaires existants :\n"); 
+		List<BankAccount> lstComptes = bkDao.readAll();
+		for (BankAccount compte : lstComptes) {
+			System.out.println(compte+"\n"); 
+		}
+		String numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte que vous souhaitez consulter : ",false);
+		BankAccount accountToShow = bkDao.readById(numBankAccount);
+		System.out.println(accountToShow+"\n");
 	}
+	
+	
+	
 	
 }
