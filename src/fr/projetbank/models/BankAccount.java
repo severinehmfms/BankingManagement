@@ -48,6 +48,9 @@ public class BankAccount {
 		this.lstOperations = lstOperations;
 	}	
 	
+	/**
+	 * Méthode toString
+	 */
 	public String toString() {
 		return "Numéro de compte : " + this.numBankAccount + " - Titulaire : " + this.holder + " - Solde : " + this.balance + "€";
 	}
