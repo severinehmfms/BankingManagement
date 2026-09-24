@@ -13,11 +13,27 @@ import fr.projetbank.models.BankAccount;
 public class TestBankingManagement {
 
 	public static void main(String[] args){
+	
+		
+		testBankAccount();
+		
+		testOperation();
+		
+	}
+	
+	public static void testOperation() {
+		System.out.println("\n\nTest pour les opérations");
+		
+	}
+	
+	public static void testBankAccount() {
+		System.out.println("\n\nTest pour les comptes bancaires");
+		
 		//Dao pour gérer les comptes bancaires en base
 		BankAccountDao dao = new BankAccountDao();	
 		
 		//TODO Si je veux supprimer le compte après je met à true
-		boolean wanttosup = false;
+		boolean wanttosup = true;
 		
 		//Test affichage de tous les comptes bancaires
 		System.out.println("--Test readAll : Liste des comptes bancaires existants :\n"); 
@@ -27,7 +43,7 @@ public class TestBankingManagement {
 		}
 		
 		//Test création/lire un compte/modif/suppression d'un compte bancaire		
-		String numCompteToCreate = "FR-1234-5678";
+		String numCompteToCreate = "FR-1234-5679";
 		BankAccount testAccount = new BankAccount(numCompteToCreate, "Antoine DUPONT");		
 		
 		System.out.println("--Test readById\n"); 
@@ -67,6 +83,7 @@ public class TestBankingManagement {
 				System.out.println("ERREUR lors de la Suppression");
 			}
 		}
-		
 	}
+	
+	
 }
