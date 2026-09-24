@@ -63,6 +63,7 @@ public class BankingManagement {
 	
 	/**
 	 * Méthode pour créer un compte bancaire
+	 * @param bkDao Dao qui permet de gérer en base les BankAccount
 	 * @throws ParseException 
 	 * @throws BankAccountAlreadyExistsException 
 	 */
@@ -73,21 +74,19 @@ public class BankingManagement {
 		String holder = Functions.input_string(scanner, "Titulaire du compte : ");
 		
 		BankAccount bankAccount = new BankAccount(numBankAccount,holder);		
-		System.out.println("on va créer le compte "+numBankAccount+"\n");
-		//TODO Décommenter
-		/*bankAccount = bkDao.create(bankAccount);
+		
+		bankAccount = bkDao.create(bankAccount);
 		if (bankAccount == null) {
 			System.out.println("ERREUR lors de la création du compte");
 		}else {
 			System.out.println("Création de ce compte bien effectuée : ");
 			System.out.println(bankAccount);
-		}		*/
+		}
 	}
 	
 	/**
 	 * Fonction qui permet de demander un numéro de compte au format FR-XXXX-XXXX
 	 * @param bkDao Dao qui permet de gérer en base les BankAccount
-	 * @param scanner
 	 * @param prompt Prompt qui demande à l'utilisateur de saisir 
 	 * @param verifExist : true si il faut vérifier si ce compte existe déjà
 	 * @return
@@ -124,7 +123,7 @@ public class BankingManagement {
 
 	/**
 	 * Méthode pour consulter un compte bancaire
-	 * @param bkDao
+	 * @param bkDao Dao qui permet de gérer en base les BankAccount
 	 * @throws ParseException
 	 * @throws BankAccountAlreadyExistsException
 	 */
