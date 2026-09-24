@@ -1,6 +1,8 @@
 package fr.projetbank.business;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.projetbank.daos.BankAccountDao;
 import fr.projetbank.models.BankAccount;
@@ -12,32 +14,59 @@ public class TestBankingManagement {
 
 	public static void main(String[] args){
 		//Dao pour gérer les comptes bancaires en base
-		BankAccountDao bDao = new BankAccountDao();	
+		BankAccountDao dao = new BankAccountDao();	
 		
-		//BankAccount testAccount = new BankAccount("FR-1234-5678", "Antoine DUPONT");
+		//TODO Si je veux supprimer le compte après je met à true
+		boolean wanttosup = false;
 		
+		//Test affichage de tous les comptes bancaires
+		System.out.println("--Test readAll : Liste des comptes bancaires existants :\n"); 
+		List<BankAccount> lstComptes = dao.readAll();
+		for (BankAccount compte : lstComptes) {
+			System.out.println(compte+"\n"); 
+		}
 		
-		//TODO Test Vérifier l'existence d'un compte bancaire de ce numéro avant
+		//Test création/lire un compte/modif/suppression d'un compte bancaire		
+		String numCompteToCreate = "FR-1234-5678";
+		BankAccount testAccount = new BankAccount(numCompteToCreate, "Antoine DUPONT");		
 		
-		
-		//Test : On crée ce compte bancaire (ok)
-		//testAccount = bDao.create(testAccount);
-		
-		//Test : On affiche ce compte bancaire (ok)
-		BankAccount testAccount = bDao.readById("FR-1234-5678");
-		System.out.println(testAccount);
-		
-		//Test : On modifie ce compte bancaire (ok)
-		testAccount.setHolder("Ann SMITH");
-		testAccount.setBalance(new BigDecimal("500000"));
-		if (bDao.update(testAccount)) {
-			System.out.println("Modification bien effectuée");
+		System.out.println("--Test readById\n"); 
+		//On vérifie la non existence d'un compte bancaire pour ce numéro de compte
+		if (dao.readById(numCompteToCreate) == null) {
+			System.out.println("Ce compte bancaire n'existe pas, on le crée !");
+			//Test : On crée ce compte bancaire (ok)
+			System.out.println("--Test create\n"); 
+			testAccount = dao.create(testAccount);
 		}else {
-			System.out.println("ERREUR lors de la Modification");
+			System.out.println("ERREUR - Ce compte bancaire existe déjà !");
 		}
 				
-		//Test : On supprime ce compte bancaire	(ok)	
-		//bDao.delete("FR-1234-5678");
+		//Test : On affiche ce compte bancaire (ok)
+		System.out.println("--Test readById après création\n");
+		BankAccount testAccount2 = dao.readById(numCompteToCreate);
+		System.out.println(testAccount+"\n");
+		
+		if (testAccount2 != null) {
+			System.out.println("--Test update\n");
+			//Test : On modifie ce compte bancaire (ok)
+			testAccount2.setHolder("Ann SMITH");
+			testAccount2.setBalance(new BigDecimal("500000"));
+			if (dao.update(testAccount2)) {
+				System.out.println("Modification bien effectuée");
+			}else {
+				System.out.println("ERREUR lors de la Modification");
+			}
+		}
+				
+		//Test : On supprime ce compte bancaire	(ok)
+		if (wanttosup) {
+			System.out.println("--Test delete\n");
+			if (dao.delete(numCompteToCreate)) {
+				System.out.println("Suppression du compte bien effectuée");
+			}else{
+				System.out.println("ERREUR lors de la Suppression");
+			}
+		}
 		
 	}
 }
