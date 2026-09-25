@@ -46,28 +46,36 @@ public class TestBankingManagement {
 			
 			System.out.println(op + "\n"); 
 		}
-				
+		
+		String numcpt78 = "FR-1234-5678";
+		String numcpt79 = "FR-1234-5679";
 		BankAccount bk = bkDao.readById("FR-1234-5679");		
 		
 		if (bk == null) {
 			System.out.println("Il faut obligatoirement un compte lié pour pouvoir créer une opération");
 		}else {		
+			//Test récupération des opérations associées à un compte
+			List<Operation> listOperations = opDao.readOperationsByBankAccount(numcpt78);
+			for (Operation op : listOperations) {
+				System.out.println(op); 
+			}
+			
 			//Création d'un dépôt (ok)
-			Deposit op = new Deposit(new Date(), new BigDecimal("500000"), bk);
+			Deposit op = new Deposit(new Date(), new BigDecimal("500000"), numcpt79);
 			//opDao.create(op);
 			//System.out.println(op.toString());
 			
 			//Création d'un retrait (ok)
-			Withdrawal wd = new Withdrawal(new Date(), new BigDecimal("20000.20"), bk);
+			Withdrawal wd = new Withdrawal(new Date(), new BigDecimal("20000.20"), numcpt79);
 			//opDao.create(wd);			
 			//System.out.println(wd.toString());
 		}
 		
-		BankAccount bkDest = bkDao.readById("FR-1234-5678");
+		BankAccount bkDest = bkDao.readById(numcpt79);
 		if (bk == null || bkDest == null) {
 			System.out.println("Il faut obligatoirement un compte lié ET un compte destinataire pour pouvoir créer un virement");
 		}else {
-			Transfer op = new Transfer(new Date(), new BigDecimal("20000.20"), bk, bkDest);
+			Transfer op = new Transfer(new Date(), new BigDecimal("20000.20"), numcpt78, numcpt79);
 			//opDao.create(op);
 			
 			//System.out.println(op.toString());

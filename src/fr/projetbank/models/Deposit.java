@@ -9,8 +9,8 @@ public class Deposit extends Operation{
 	 * Dépôt
 	 */
 
-	public Deposit(Date dateOperation, BigDecimal amountTransaction, BankAccount bankAccount) {
-		super(dateOperation, amountTransaction, bankAccount);
+	public Deposit(Date dateOperation, BigDecimal amountTransaction, String numBankAccount) {
+		super(dateOperation, amountTransaction, numBankAccount);
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class Deposit extends Operation{
 
 	@Override
 	public String toString() {
-		return "Compte lié " + super.getBankAccount().getNumBankAccount() + " - " + this.getTypeOperation() 
+		return "Compte lié " + super.getNumBankAccount() + " - " + this.getTypeOperation() 
 				+ " - Date : " + super.dateOperation + " - Montant : " + super.amountTransaction + "€\n";
 	}
 }

@@ -11,34 +11,29 @@ public class Transfer extends Operation{
 	 * Virement bancaire
 	 */
 	
-	private BankAccount bankAccountDestination;
+	private String numBankAccountDestination;
 	
-	public Transfer(Date dateOperation, BigDecimal amountTransaction, BankAccount bankAccount, BankAccount bankAccountDestination) {
-		super(dateOperation, amountTransaction, bankAccount);
-		this.bankAccountDestination = bankAccountDestination;
+	public Transfer(Date dateOperation, BigDecimal amountTransaction, String numBankAccount, String numBankAccountDestination) {
+		super(dateOperation, amountTransaction, numBankAccount);
+		this.numBankAccountDestination = numBankAccountDestination;
 	}
 
 	@Override
     public typesOperations getTypeOperation() {
         return typesOperations.TRANSFER;
-    }
+    }	
 	
-	public BankAccount getBankAccountDestination() {
-		return bankAccountDestination;
+	public String getNumBankAccountDestination() {
+		return numBankAccountDestination;
 	}
 
-	public void setBankAccountDestination(BankAccount bankAccountDestination) {
-		this.bankAccountDestination = bankAccountDestination;
-	}	
-	
-	@Override
-	public String getNumBankAccountDestination() {
-	    return bankAccountDestination.getNumBankAccount();
+	public void setNumBankAccountDestination(String numBankAccountDestination) {
+		this.numBankAccountDestination = numBankAccountDestination;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Compte lié " + super.getBankAccount().getNumBankAccount() + " - " + this.getTypeOperation() + " - Date : " + super.dateOperation
-				+ " - Montant : " + super.amountTransaction + "€ - Destinataire : " + this.getBankAccountDestination().getNumBankAccount() + "\n";
+		return "Compte lié " + super.getNumBankAccount() + " - " + this.getTypeOperation() + " - Date : " + super.dateOperation
+				+ " - Montant : " + super.amountTransaction + "€ - Destinataire : " + this.getNumBankAccountDestination() + "\n";
 	}
 }

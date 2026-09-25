@@ -54,6 +54,18 @@ public class BankAccount {
 	public String toString() {
 		return "Numéro de compte : " + this.numBankAccount + " - Titulaire : " + this.holder + " - Solde : " + this.balance + "€";
 	}
+	
+	public String getDetailsBankAccount() {
+		String details =  "Numéro de compte : " + this.numBankAccount + " - Titulaire : " + this.holder + " - Solde : " + this.balance + "€";
+		
+		details += "Liste des opérations associées à ce compte : \n";
+		for (Operation op : this.lstOperations) {
+			details += op;
+		}
+		
+		
+		return details;
+	}
 
 	public String getNumBankAccount() {
 		return numBankAccount;

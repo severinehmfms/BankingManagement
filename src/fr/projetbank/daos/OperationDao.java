@@ -41,25 +41,26 @@ public class OperationDao implements Dao<Operation, Integer> {
 			String rsNumBankAccountDestination = resultSet.getString("NumBankAccountDestination");
 					
 			//On va récupérer le compte bancaire correspondant au numéro de compte
-			BankAccount bankAccount = dao.readById(rsNumBankAccount);
+			// en fait suite bug on enregistre seulement le numéro du compte et pas l'objet
+			//BankAccount bankAccount = dao.readById(rsNumBankAccount);
 			
 			//On va créer le bon objet en fonction du type d'opération en base
 			Operation.typesOperations type = Operation.typesOperations.valueOf(rsTypeOperation);
 			switch (type) {
 			    case DEPOSIT:
-			    	operation = new Deposit(utilDateOperation, rsAmountTransaction, bankAccount);
+			    	operation = new Deposit(utilDateOperation, rsAmountTransaction, rsNumBankAccount);
 			        break;
 	
 			    case WITHDRAWAL:
-			    	operation = new Withdrawal(utilDateOperation, rsAmountTransaction, bankAccount);
+			    	operation = new Withdrawal(utilDateOperation, rsAmountTransaction, rsNumBankAccount);
 			        break;
 	
 			    case TRANSFER:
 			        if (rsNumBankAccountDestination == null) {
 			            throw new Exception("Un transfert doit obligatoirement comporter un compte destinataire.");
 			        } 
-			        BankAccount bankAccountDestinataire = dao.readById(rsNumBankAccountDestination);
-					operation = new Transfer(utilDateOperation, rsAmountTransaction, bankAccount, bankAccountDestinataire);
+			        //BankAccount bankAccountDestinataire = dao.readById(rsNumBankAccountDestination);
+					operation = new Transfer(utilDateOperation, rsAmountTransaction, rsNumBankAccount, rsNumBankAccountDestination);
 			}
 			
 			//On rajoute l'id
@@ -114,6 +115,9 @@ public class OperationDao implements Dao<Operation, Integer> {
 	 * @return
 	 */
 	public List<Operation> readOperationsByBankAccount(String numBankAccount) {
+		//DEBUG EN COURS
+		//System.out.println("Numéro de compte recherché : "+numBankAccount);
+		
 		List<Operation> lstOperations = new ArrayList<Operation>();
 		try (Connection connection = DatabaseConnection.getConnection()) {
 			String strSql;
@@ -129,20 +133,25 @@ public class OperationDao implements Dao<Operation, Integer> {
 			    if (!numBankAccount.equals("")) {
 			        ps.setString(1, numBankAccount);
 			    }
-			    
+
+			    //System.out.println(strSql);
+				
 	        	try(ResultSet resultSet = ps.executeQuery()){
 			
 	           		while(resultSet.next()) {
 	        			
-	        			Operation operation = getOperationFromDb(resultSet);
+	           			//TODO Voir pourquoi ça fait une boucle infinie ici.........
+	        			//Operation operation = getOperationFromDb(resultSet);
 	        			
-	        			if (operation != null) {
-	        				lstOperations.add(operation);
-	        			}
+	        			//if (operation != null) {
+	        				//lstOperations.add(operation);
+	        			//}
 	        			
 	        		}
 	        	}
 			}
+		} catch (SQLException e) {
+            e.printStackTrace();        
 		} catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,7 +174,7 @@ public class OperationDao implements Dao<Operation, Integer> {
 				//Operation.typeTransaction typeOperation = obj.getTypeOperation();
 				//ps.setString(3, typeOperation.toString());
 				ps.setString(3, obj.getTypeOperation().name());				
-				ps.setString(4, obj.getBankAccount().getNumBankAccount());
+				ps.setString(4, obj.getNumBankAccount());
 				
 				String numBankAccountDestination = obj.getNumBankAccountDestination();
 				if (numBankAccountDestination != null) {
@@ -205,7 +214,7 @@ public class OperationDao implements Dao<Operation, Integer> {
 				//Operation.typeTransaction typeOperation = obj.getTypeOperation();
 				//ps.setString(3, typeOperation.toString());
 				ps.setString(3, obj.getTypeOperation().name());				
-				ps.setString(4, obj.getBankAccount().getNumBankAccount());
+				ps.setString(4, obj.getNumBankAccount());
 				
 				String numBankAccountDestination = obj.getNumBankAccountDestination();
 				if (numBankAccountDestination != null) {

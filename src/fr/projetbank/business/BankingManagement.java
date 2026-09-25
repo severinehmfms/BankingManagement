@@ -50,7 +50,6 @@ public class BankingManagement {
 				case 3:				
 					//Gestion des opérations
 					System.out.println("Gestion des opérations");
-					System.out.println("Fonctionnalité non implémentée pour l'instant");
 					gestionOperations(bkDao,opDao);
 					break;
 				case 4:
@@ -153,7 +152,10 @@ public class BankingManagement {
 		}
 		String numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte que vous souhaitez consulter : ",true,false);
 		BankAccount accountToShow = bkDao.readById(numBankAccount);
-		System.out.println(accountToShow+"\n");
+		//System.out.println(accountToShow+"\n");
+		
+		String details = accountToShow.getDetailsBankAccount();
+		System.out.println(details+"\n");
 	}
 	
 	/**
@@ -192,7 +194,7 @@ public class BankingManagement {
 					if (maxAmount < 1) {
 						System.out.println("Le plafond de votre compte est atteint, il ne vous est plus possible d'effectuer un dépôt !");
 					}else {
-						Deposit op = new Deposit(new Date(), new BigDecimal(amount), bankAccount);
+						Deposit op = new Deposit(new Date(), new BigDecimal(amount), numBankAccount);
 						opDao.create(op);
 					}
 					break;

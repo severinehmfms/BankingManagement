@@ -16,7 +16,7 @@ public abstract class Operation {
 	protected int idOperation;
 	protected Date dateOperation;
 	protected BigDecimal amountTransaction;
-	protected BankAccount bankAccount;
+	protected String numBankAccount;
 	
 	/**
 	 * Constructeur quand l'identifiant n'est pas encore connu
@@ -24,11 +24,11 @@ public abstract class Operation {
 	 * @param amountTransaction
 	 * @param bankAccount
 	 */
-	public Operation(Date dateOperation, BigDecimal amountTransaction, BankAccount bankAccount) {
+	public Operation(Date dateOperation, BigDecimal amountTransaction, String numBankAccount) {
 		this.idOperation = 0;
 		this.dateOperation = dateOperation;
 		this.amountTransaction = amountTransaction;
-		this.bankAccount = bankAccount;
+		this.numBankAccount = numBankAccount;
 	}
 	
 	/**
@@ -38,11 +38,11 @@ public abstract class Operation {
 	 * @param amountTransaction
 	 * @param bankAccount
 	 */
-	public Operation(int idOperation, Date dateOperation, BigDecimal amountTransaction, BankAccount bankAccount) {
+	public Operation(int idOperation, Date dateOperation, BigDecimal amountTransaction, String numBankAccount) {
 		this.idOperation = idOperation;
 		this.dateOperation = dateOperation;
 		this.amountTransaction = amountTransaction;
-		this.bankAccount = bankAccount;
+		this.numBankAccount = numBankAccount;
 	}	
 	
 	/**
@@ -70,11 +70,11 @@ public abstract class Operation {
 	public void setAmountTransaction(BigDecimal amountTransaction) {
 		this.amountTransaction = amountTransaction;
 	}
-	public BankAccount getBankAccount() {
-		return bankAccount;
+	public String getNumBankAccount() {
+		return numBankAccount;
 	}
-	public void setBankAccount(BankAccount bankAccount) {
-		this.bankAccount = bankAccount;
+	public void setNumBankAccount(String numBankAccount) {
+		this.numBankAccount = numBankAccount;
 	}
 
 	//Permet à chaque classe fille de connaître le type d'opération

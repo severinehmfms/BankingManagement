@@ -16,6 +16,9 @@ import fr.projetbank.models.Operation;
 public class BankAccountDao implements Dao<BankAccount, String> {
 	
 	public BankAccount getBankAccountFromDb(ResultSet resultSet) throws SQLException {
+		//Dao pour gérer les opérations en base
+		OperationDao opDao = new OperationDao();
+		
 		BankAccount bankAccount = null;
 		try {
 			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
@@ -25,10 +28,11 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 			
 			
 			//TODO On va récupérer la liste des opérations correspondant à ce compte bancaire
-			//En appelant le dao Operation
+			List<Operation> listOperations = new ArrayList<Operation>();			
+			listOperations = opDao.readOperationsByBankAccount(rsNumBankAccount);
+						
 			
-			
-			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
+			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, listOperations);
 	   
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -69,15 +73,13 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 	        			String rsNumBankAccount = resultSet.getString("numBankAccount"); 
 	        			String rsHolder = resultSet.getString("Holder");
 	        			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
-	        			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");
+	        			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");*/
 	        			
 	        			
 	        			//TODO On va récupérer la liste des opérations correspondant à ce compte bancaire
 	        			//En appelant le dao Operation
-	        			
-	        			
-	        			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
-	                	*/
+	        			//bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, new ArrayList<Operation>());
+	                	
 	                } 
 	        	}	        	
 	        }
