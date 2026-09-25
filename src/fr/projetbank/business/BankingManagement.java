@@ -13,6 +13,7 @@ import fr.projetbank.exceptions.BankAccountAlreadyExistsException;
 import fr.projetbank.exceptions.BankAccountNoExistsException;
 import fr.projetbank.models.BankAccount;
 import fr.projetbank.models.Deposit;
+import fr.projetbank.models.Transfer;
 import fr.projetbank.models.Withdrawal;
 
 public class BankingManagement {
@@ -238,7 +239,42 @@ public class BankingManagement {
 				case 3:				
 					//Effectuer un virement
 					System.out.println("Effectuer un virement");
-					System.out.println("Fonctionnalité non implémentée pour l'instant");
+					
+					//On récupère le montant disponible sur le compte et on le choisit comme montant max
+					numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte à partir duquel vous souhaitez effectuer un virement : ",true, false);
+					bankAccount = bkDao.readById(numBankAccount);
+					
+					maxAmount = bankAccount.getBalance().doubleValue();
+					
+					System.out.println("Montant maximal du virement : "+maxAmount);
+					amount = Functions.input_double(scanner, "Entrez le montant du virement", 1, maxAmount);
+					
+					//On récupère le montant disponible sur le compte et on le choisit comme montant max
+					String numBankAccountDestination = inputNumBankAccount(bkDao, "Entrez le numéro du compte vers lequel vous souhaitez effectuer un virement : ",true, false);
+					BankAccount bankAccountDestination = bkDao.readById(numBankAccountDestination);
+					
+					if (maxAmount < 1) {
+						System.out.println("Vous n'avez plus d'argent sur votre compte, il ne vous est plus possible d'effectuer un virement !");
+					}else {
+						Transfer op = new Transfer(new Date(), new BigDecimal(amount), numBankAccount, numBankAccountDestination);
+						opDao.create(op);
+						
+						//Bon j'ai été prise par le temps j'ai pas pu gérer les commit rollback etc bien comme il faut !!!
+						
+						//On met à jour le solde du compte en déduisant le montant du virement
+						bankAccount.setBalance(bankAccount.getBalance().subtract(new BigDecimal(amount)));
+						//ON met à jour ce solde en base de données
+						if (bkDao.update(bankAccount)) {
+							System.out.println("Virement bien effectué, le solde du compte émetteur est maintenant de "+bankAccount.getBalance() + "€");
+						}
+						
+						//On met à jour le solde du compte destinataire en ajoutant le montant du virement
+						bankAccountDestination.setBalance(bankAccountDestination.getBalance().add(new BigDecimal(amount)));
+						//ON met à jour ce solde en base de données
+						if (bkDao.update(bankAccountDestination)) {
+							System.out.println("Virement bien effectué, le solde du compte destinataire est maintenant de "+bankAccountDestination.getBalance() + "€");
+						}
+					}	
 					break;
 				case 0:
 					System.out.println("Retour au menu précédent.");
