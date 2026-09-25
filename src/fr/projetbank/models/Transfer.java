@@ -33,7 +33,7 @@ public class Transfer extends Operation{
 
 	@Override
 	public String toString() {
-		return "Compte lié " + super.getNumBankAccount() + " - " + this.getTypeOperation() + " - Date : " + super.dateOperation
+		return super.getNumBankAccount() + " - " + this.getTypeOperation() + " - Date : " + super.dateOperation
 				+ " - Montant : " + super.amountTransaction + "€ - Destinataire : " + this.getNumBankAccountDestination() + "\n";
 	}
 }

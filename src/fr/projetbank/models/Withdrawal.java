@@ -23,7 +23,7 @@ public class Withdrawal extends Operation{
 	
 	@Override
 	public String toString() {
-		return "Compte lié " + super.getNumBankAccount() + " - " + this.getTypeOperation() 
+		return super.getNumBankAccount() + " - " + this.getTypeOperation() 
 				+ " - Date : " + super.dateOperation + " - Montant : " + super.amountTransaction + "€\n";
 	}
 }

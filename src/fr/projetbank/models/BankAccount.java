@@ -56,7 +56,7 @@ public class BankAccount {
 	}
 	
 	public String getDetailsBankAccount() {
-		String details =  "Numéro de compte : " + this.numBankAccount + " - Titulaire : " + this.holder + " - Solde : " + this.balance + "€";
+		String details =  "Numéro de compte : " + this.numBankAccount + " - Titulaire : " + this.holder + " - Solde : " + this.balance + "€\n";
 		
 		details += "Liste des opérations associées à ce compte : \n";
 		for (Operation op : this.lstOperations) {

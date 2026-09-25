@@ -140,12 +140,11 @@ public class OperationDao implements Dao<Operation, Integer> {
 			
 	           		while(resultSet.next()) {
 	        			
-	           			//TODO Voir pourquoi ça fait une boucle infinie ici.........
-	        			//Operation operation = getOperationFromDb(resultSet);
+	           			Operation operation = getOperationFromDb(resultSet);
 	        			
-	        			//if (operation != null) {
-	        				//lstOperations.add(operation);
-	        			//}
+	        			if (operation != null) {
+	        				lstOperations.add(operation);
+	        			}
 	        			
 	        		}
 	        	}

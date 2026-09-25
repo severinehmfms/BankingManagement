@@ -26,11 +26,9 @@ public class BankAccountDao implements Dao<BankAccount, String> {
 			BigDecimal rsBalance = resultSet.getBigDecimal("Balance");
 			BigDecimal rsMaximumBalance = resultSet.getBigDecimal("MaximumBalance");
 			
-			
-			//TODO On va récupérer la liste des opérations correspondant à ce compte bancaire
+			//On va récupérer la liste des opérations correspondant à ce compte bancaire
 			List<Operation> listOperations = new ArrayList<Operation>();			
-			listOperations = opDao.readOperationsByBankAccount(rsNumBankAccount);
-						
+			listOperations = opDao.readOperationsByBankAccount(rsNumBankAccount);						
 			
 			bankAccount = new BankAccount(rsNumBankAccount, rsHolder, rsBalance, rsMaximumBalance, listOperations);
 	   
