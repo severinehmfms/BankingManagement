@@ -13,6 +13,7 @@ import fr.projetbank.exceptions.BankAccountAlreadyExistsException;
 import fr.projetbank.exceptions.BankAccountNoExistsException;
 import fr.projetbank.models.BankAccount;
 import fr.projetbank.models.Deposit;
+import fr.projetbank.models.Withdrawal;
 
 public class BankingManagement {
 	
@@ -177,31 +178,62 @@ public class BankingManagement {
 		while (choice_user != 0) {
 			//On demande à l'utilisateur son choix par rapport au menu proposé
 			choice_user = Functions.ask_user_choice(scanner, menu);
+			String numBankAccount;
+			BankAccount bankAccount;
+			double maxAmount;
+			double amount;
 			switch(choice_user) {
 				case 1:				
 					//Effectuer un dépôt
 					System.out.println("Effectuer un dépôt");
 					
-					String numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte sur lequel vous souhaitez effectuer un dépôt : ",true, false);
-					BankAccount bankAccount = bkDao.readById(numBankAccount);
+					numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte sur lequel vous souhaitez effectuer un dépôt : ",true, false);
+					bankAccount = bkDao.readById(numBankAccount);
 					
-					double maxAmount = BankAccount.MAX_BALANCE.doubleValue() - bankAccount.getBalance().doubleValue();
+					maxAmount = BankAccount.MAX_BALANCE.doubleValue() - bankAccount.getBalance().doubleValue();
 					//System.out.println("Plafond : : "+BankAccount.MAX_BALANCE);
 					//System.out.println("Solde actuel : "+bankAccount.getBalance());
 					System.out.println("Montant maximal du dépôt : "+maxAmount);
-					double amount = Functions.input_double(scanner, "Entrez le montant du dépôt", 1, maxAmount);
+					amount = Functions.input_double(scanner, "Entrez le montant du dépôt", 1, maxAmount);
 					
 					if (maxAmount < 1) {
 						System.out.println("Le plafond de votre compte est atteint, il ne vous est plus possible d'effectuer un dépôt !");
 					}else {
 						Deposit op = new Deposit(new Date(), new BigDecimal(amount), numBankAccount);
 						opDao.create(op);
+						//On met à jour le solde du compte avec ce dépôt
+						bankAccount.setBalance(bankAccount.getBalance().add(new BigDecimal(amount)));
+						//ON met à jour ce solde en base de données
+						if (bkDao.update(bankAccount)) {
+							System.out.println("Dépôt bien effectué sur ce compte, le solde est maintenant de "+bankAccount.getBalance() + "€");
+						}
 					}
 					break;
 				case 2:				
 					//Effectuer un retrait
 					System.out.println("Effectuer un retrait");
-					System.out.println("Fonctionnalité non implémentée pour l'instant");	
+					
+					//On récupère le montant disponible sur le compte et on le choisit comme montant max
+					numBankAccount = inputNumBankAccount(bkDao, "Entrez le numéro du compte sur lequel vous souhaitez effectuer un dépôt : ",true, false);
+					bankAccount = bkDao.readById(numBankAccount);
+					
+					maxAmount = bankAccount.getBalance().doubleValue();
+					
+					System.out.println("Montant maximal du retrait : "+maxAmount);
+					amount = Functions.input_double(scanner, "Entrez le montant du retrait", 1, maxAmount);
+					
+					if (maxAmount < 1) {
+						System.out.println("Vous n'avez plus d'argent sur votre compte, il ne vous est plus possible d'effectuer un retrait !");
+					}else {
+						Withdrawal op = new Withdrawal(new Date(), new BigDecimal(amount), numBankAccount);
+						opDao.create(op);
+						//On met à jour le solde du compte avec ce dépôt
+						bankAccount.setBalance(bankAccount.getBalance().subtract(new BigDecimal(amount)));
+						//ON met à jour ce solde en base de données
+						if (bkDao.update(bankAccount)) {
+							System.out.println("Retrait bien effectué sur ce compte, le solde est maintenant de "+bankAccount.getBalance() + "€");
+						}
+					}	
 					break;
 				case 3:				
 					//Effectuer un virement
